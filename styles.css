@@ -109,158 +109,98 @@ header {
     color: white;
     cursor: pointer;
     transition: var(--transition);
+    margin: 0 5px;
 }
 
 .search-box button:hover {
     background-color: var(--secondary-color);
 }
 
-.location-btn {
-    display: flex;
-    justify-content: center;
-    margin-top: 15px;
+.weather-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
 }
 
-.location-btn button {
+.weather-card {
+    background-color: var(--card-background);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px var(--shadow-color);
+    text-align: center;
+}
+
+.current-weather {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.temp {
+    font-size: 4rem;
+    font-weight: 600;
+    margin: 20px 0;
+}
+
+.weather-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 10px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 20px;
-    background-color: var(--card-background);
-    color: var(--text-color);
-    cursor: pointer;
-    transition: var(--transition);
 }
 
-.location-btn button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px var(--shadow-color);
+.detail-item i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
 }
 
-.weather-container {
+.forecast-container {
+    margin-top: 30px;
     background-color: var(--card-background);
     border-radius: 20px;
     padding: 30px;
     box-shadow: 0 4px 15px var(--shadow-color);
 }
 
-.weather-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.location {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.location i {
-    color: var(--primary-color);
-}
-
-.location span {
-    color: var(--secondary-color);
-}
-
-.weather-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 30px;
-}
-
-.temperature {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.temperature img {
-    width: 80px;
-    height: 80px;
-}
-
-.temperature h2 {
-    font-size: 3rem;
-    font-weight: 600;
-}
-
-.unit {
-    font-size: 1.5rem;
-    color: var(--secondary-color);
-}
-
-.weather-details {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 20px;
-    margin-top: 30px;
-}
-
-.detail {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px;
-    background-color: var(--background-color);
-    border-radius: 15px;
-}
-
-.detail i {
-    font-size: 1.5rem;
-    color: var(--primary-color);
-}
-
-.detail-info .label {
-    font-size: 0.9rem;
-    color: var(--secondary-color);
-}
-
-.forecast-container {
-    margin-top: 30px;
-}
-
 .forecast-container h3 {
     margin-bottom: 20px;
 }
 
-.forecast {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-}
-
-.forecast-item {
-    background-color: var(--background-color);
-    padding: 15px;
-    border-radius: 15px;
-    text-align: center;
+.chart-container {
+    position: relative;
+    height: 400px;
+    width: 100%;
 }
 
 .error-message {
+    display: none;
+    color: #ff5252;
     text-align: center;
-    color: #f44336;
     margin-top: 20px;
     padding: 10px;
+    background-color: var(--card-background);
     border-radius: 10px;
-    background-color: rgba(244, 67, 54, 0.1);
-    display: none;
+    box-shadow: 0 2px 10px var(--shadow-color);
 }
 
 footer {
     text-align: center;
-    padding: 20px;
     margin-top: 50px;
+    padding: 20px;
     color: var(--text-color);
 }
 
-footer i {
-    color: #f44336;
+footer a {
+    color: var(--primary-color);
+    text-decoration: none;
 }
 
 @media (max-width: 768px) {
@@ -268,26 +208,11 @@ footer i {
         padding: 10px;
     }
 
-    .weather-details {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .temperature h2 {
-        font-size: 2.5rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .weather-details {
+    .weather-info {
         grid-template-columns: 1fr;
     }
 
-    .search-box {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .search-box button {
-        width: 100%;
+    .logo h1 {
+        font-size: 1.5rem;
     }
 }
