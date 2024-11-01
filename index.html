@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weatherly - Live Weather Updates</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <header>
             <div class="logo">
                 <i class="fas fa-cloud-sun"></i>
-                <h1>Weatherly Pro</h1>
+                <h1>Weatherly</h1>
             </div>
             <div class="theme-toggle">
                 <i class="fas fa-moon"></i>
@@ -24,81 +25,67 @@
             <div class="search-box">
                 <i class="fas fa-search"></i>
                 <input type="text" id="city-input" placeholder="Search for a city...">
-                <button id="search-btn">Search</button>
-            </div>
-            <div class="location-btn">
                 <button id="current-location">
-                    <i class="fas fa-location-dot"></i>
-                    Use My Location
+                    <i class="fas fa-location-dot"></i> Use My Location
                 </button>
+                <button id="search-btn">Search</button>
             </div>
         </div>
 
-        <main class="weather-container">
-            <div class="current-weather">
-                <div class="weather-header">
-                    <div class="location">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <h2 id="city">Loading...</h2>
-                        <span id="country"></span>
-                    </div>
-                    <p id="date-time"></p>
-                </div>
+        <div id="error-message" class="error-message"></div>
 
-                <div class="weather-info">
-                    <div class="temperature">
-                        <img id="weather-icon" src="" alt="Weather Icon">
-                        <h2 id="temp"></h2>
-                        <span class="unit">°C</span>
+        <div class="weather-info">
+            <div class="weather-card">
+                <h2 id="city">Loading...</h2>
+                <p id="country"></p>
+                <p id="date-time"></p>
+                <div class="current-weather">
+                    <img id="weather-icon" src="" alt="Weather Icon">
+                    <div class="temp">
+                        <span id="temp">0</span>°<span id="temp-unit">C</span>
                     </div>
                     <p id="weather-desc"></p>
                 </div>
+            </div>
 
+            <div class="weather-card">
                 <div class="weather-details">
-                    <div class="detail">
-                        <i class="fas fa-temperature-high"></i>
-                        <div class="detail-info">
-                            <p class="label">Feels Like</p>
-                            <p id="feels-like"></p>
-                        </div>
+                    <div class="detail-item">
+                        <i class="fas fa-temperature-low"></i>
+                        <p>Feels Like</p>
+                        <p id="feels-like">0°C</p>
                     </div>
-                    <div class="detail">
-                        <i class="fas fa-droplet"></i>
-                        <div class="detail-info">
-                            <p class="label">Humidity</p>
-                            <p id="humidity"></p>
-                        </div>
+                    <div class="detail-item">
+                        <i class="fas fa-water"></i>
+                        <p>Humidity</p>
+                        <p id="humidity">0%</p>
                     </div>
-                    <div class="detail">
+                    <div class="detail-item">
                         <i class="fas fa-wind"></i>
-                        <div class="detail-info">
-                            <p class="label">Wind Speed</p>
-                            <p id="wind-speed"></p>
-                        </div>
+                        <p>Wind Speed</p>
+                        <p id="wind-speed">0 km/h</p>
                     </div>
-                    <div class="detail">
+                    <div class="detail-item">
                         <i class="fas fa-compass"></i>
-                        <div class="detail-info">
-                            <p class="label">Wind Direction</p>
-                            <p id="wind-dir"></p>
-                        </div>
+                        <p>Wind Direction</p>
+                        <p id="wind-dir">N</p>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="forecast-container">
-                <h3>3-Day Forecast</h3>
-                <div class="forecast" id="forecast"></div>
+        <div class="forecast-container">
+            <h3>14-Day Forecast</h3>
+            <div class="chart-container">
+                <canvas id="forecastChart"></canvas>
             </div>
-        </main>
+        </div>
 
-        <div id="error-message" class="error-message"></div>
+        <footer>
+            <p>Created with <i class="fas fa-heart" style="color: var(--primary-color);"></i> by ClaytonHax Solutions</p>
+            <p>© 2024</p>
+        </footer>
     </div>
-
-    <footer>
-        <p>Created with <i class="fas fa-heart"></i> by ClaytonHax Solutions</p>
-        <p>&copy 2024</p>
-    </footer>
 
     <script src="script.js"></script>
 </body>
