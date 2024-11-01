@@ -312,65 +312,63 @@
             document.getElementById('guidanceValue').textContent = e.target.value;
         });
 
-        // Generate image function
         document.getElementById('generateBtn').addEventListener('click', async () => {
-            const loadingSpinner = document.getElementById('loadingSpinner');
-            const generatedImage = document.getElementById('generatedImage');
-            const downloadBtn = document.getElementById('downloadBtn');
-            const shareBtn = document.getElementById('shareBtn');
+    // Show loading spinner
+    loadingSpinner.style.display = 'block';
+    generatedImage.classList.add('hidden');
+    downloadBtn.classList.add('hidden');
+    shareBtn.classList.add('hidden');
 
-            // Show loading spinner
-            loadingSpinner.style.display = 'block';
-            generatedImage.classList.add('hidden');
-            downloadBtn.classList.add('hidden');
-            shareBtn.classList.add('hidden');
+    // Gather all input values
+    const prompt = document.getElementById('prompt').value;
+    const negativePrompt = document.getElementById('negativePrompt').value;
+    const width = document.getElementById('width').value;
+    const height = document.getElementById('height').value;
+    const steps = document.getElementById('steps').value;
+    const guidance = document.getElementById('guidance').value;
 
-            // Gather all input values
-            const prompt = document.getElementById('prompt').value;
-            const negativePrompt = document.getElementById('negativePrompt').value;
-            const width = document.getElementById('width').value;
-            const height = document.getElementById('height').value;
-            const steps = document.getElementById('steps').value;
-            const guidance = document.getElementById('guidance').value;
-            const sampler = document.getElementById('sampler').value;
-            const seed = document.getElementById('seed').value;
-            const batchSize = document.getElementById('batchSize').value;
-
-            try {
-                // Here you would make the API call to your Stable Diffusion backend
-                // For now, we'll simulate a response with a placeholder image
-                await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
-
-                // Hide loading spinner and show image
-                loadingSpinner.style.display = 'none';
-                generatedImage.src = 'https://picsum.photos/512/512'; // Placeholder image
-                generatedImage.classList.remove('hidden');
-                downloadBtn.classList.remove('hidden');
-                shareBtn.classList.remove('hidden');
-
-                // Add to history
-                addToHistory(prompt, 'https://picsum.photos/512/512');
-            } catch (error) {
-                console.error('Error generating image:', error);
-                loadingSpinner.style.display = 'none';
-                alert('Error generating image. Please try again.');
-            }
+    try {
+        // Make API call to Hugging Face
+        const response = await fetch('https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer YOUR_API_KEY`,  // Replace with your Hugging Face API key
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                inputs: prompt,
+                options: {
+                    negative_prompt: negativePrompt,
+                    width: parseInt(width),
+                    height: parseInt(height),
+                    num_inference_steps: parseInt(steps),
+                    guidance_scale: parseFloat(guidance),
+                },
+            }),
         });
 
-        // Add to history function
-        function addToHistory(prompt, imageUrl) {
-            const historyContainer = document.getElementById('historyContainer');
-            const historyItem = document.createElement('div');
-            historyItem.className = 'flex items-center space-x-4 p-2 rounded-lg hover:bg-opacity-50 transition duration-300';
-            historyItem.innerHTML = `
-                <img src="${imageUrl}" alt="History thumbnail" class="w-16 h-16 rounded-lg object-cover">
-                <div class="flex-1">
-                    <p class="text-sm truncate">${prompt}</p>
-                    <p class="text-xs opacity-60">${new Date().toLocaleTimeString()}</p>
-                </div>
-            `;
-            historyContainer.insertBefore(historyItem, historyContainer.firstChild);
+        const data = await response.json();
+
+        if (response.ok) {
+            // Hide loading spinner and show image
+            loadingSpinner.style.display = 'none';
+            generatedImage.src = data.output[0]; // Adjust according to the response structure
+            generatedImage.classList.remove('hidden');
+            downloadBtn.classList.remove('hidden');
+            shareBtn.classList.remove('hidden');
+
+            // Add to history
+            addToHistory(prompt, data.output[0]);
+        } else {
+            throw new Error(data.error || 'Error generating image.');
         }
+    } catch (error) {
+        console.error('Error generating image:', error);
+        loadingSpinner.style.display = 'none';
+        alert('Error generating image. Please try again.');
+    }
+});
+
 
         // Initialize particles
         createParticles();
