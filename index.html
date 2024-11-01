@@ -3,90 +3,377 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weatherly - Live Weather Updates</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>DreamForge AI | Image Generation</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --primary-light: #f0f4ff;
+            --secondary-light: #e2e8ff;
+            --text-light: #2a2a2a;
+            --accent-light: #4f46e5;
+            
+            --primary-dark: #1a1a2e;
+            --secondary-dark: #16213e;
+            --text-dark: #e2e8ff;
+            --accent-dark: #6366f1;
+        }
+
+        body {
+            transition: background-color 0.3s, color 0.3s;
+            background-color: var(--primary-light);
+            color: var(--text-light);
+        }
+
+        body.dark-mode {
+            background-color: var(--primary-dark);
+            color: var(--text-dark);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .neumorphic {
+            background: var(--primary-light);
+            border-radius: 15px;
+            box-shadow: 8px 8px 15px #d1d9e6, -8px -8px 15px #ffffff;
+        }
+
+        .dark-mode .neumorphic {
+            background: var(--primary-dark);
+            box-shadow: 8px 8px 15px #12121e, -8px -8px 15px #22223e;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-light);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+            opacity: 0.3;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+            }
+            50% {
+                transform: translateY(-100px) translateX(100px);
+            }
+            100% {
+                transform: translateY(0) translateX(0);
+            }
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--accent-light);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .prompt-input {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .prompt-input:focus {
+            border-color: var(--accent-light);
+            box-shadow: 0 0 10px rgba(79, 70, 229, 0.3);
+        }
+
+        .generated-image {
+            transition: transform 0.3s;
+        }
+
+        .generated-image:hover {
+            transform: scale(1.05);
+        }
+
+        .settings-slider {
+            -webkit-appearance: none;
+            height: 5px;
+            border-radius: 5px;
+            background: var(--secondary-light);
+            outline: none;
+        }
+
+        .settings-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .settings-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            padding: 5px 10px;
+            border-radius: 6px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">
-                <i class="fas fa-cloud-sun"></i>
-                <h1>Weatherly</h1>
-            </div>
-            <div class="theme-toggle">
+    <div class="particles" id="particles"></div>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-4xl font-bold">DreamForge AI</h1>
+            <button id="darkModeToggle" class="neumorphic p-3 rounded-full">
                 <i class="fas fa-moon"></i>
-            </div>
+            </button>
         </header>
 
-        <div class="search-container">
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="city-input" placeholder="Search for a city...">
-                <button id="current-location">
-                    <i class="fas fa-location-dot"></i> Use My Location
-                </button>
-                <button id="search-btn">Search</button>
-            </div>
-        </div>
-
-        <div id="error-message" class="error-message"></div>
-
-        <div class="weather-info">
-            <div class="weather-card">
-                <h2 id="city">Loading...</h2>
-                <p id="country"></p>
-                <p id="date-time"></p>
-                <div class="current-weather">
-                    <img id="weather-icon" src="" alt="Weather Icon">
-                    <div class="temp">
-                        <span id="temp">0</span>°<span id="temp-unit">C</span>
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Panel - Controls -->
+            <div class="glass-card p-6 space-y-6">
+                <h2 class="text-2xl font-semibold mb-4">Image Generation</h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block mb-2">Prompt</label>
+                        <textarea id="prompt" class="prompt-input w-full p-3 rounded-lg" rows="3" placeholder="Describe your image..."></textarea>
                     </div>
-                    <p id="weather-desc"></p>
+
+                    <div>
+                        <label class="block mb-2">Negative Prompt</label>
+                        <textarea id="negativePrompt" class="prompt-input w-full p-3 rounded-lg" rows="2" placeholder="What to avoid..."></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block mb-2">Width</label>
+                            <input type="number" id="width" class="prompt-input w-full p-2 rounded-lg" value="512" step="64">
+                        </div>
+                        <div>
+                            <label class="block mb-2">Height</label>
+                            <input type="number" id="height" class="prompt-input w-full p-2 rounded-lg" value="512" step="64">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block mb-2">Steps: <span id="stepsValue">50</span></label>
+                        <input type="range" id="steps" class="settings-slider w-full" min="20" max="150" value="50">
+                    </div>
+
+                    <div>
+                        <label class="block mb-2">Guidance Scale: <span id="guidanceValue">7.5</span></label>
+                        <input type="range" id="guidance" class="settings-slider w-full" min="1" max="20" step="0.5" value="7.5">
+                    </div>
+
+                    <button id="generateBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+                        Generate Image
+                    </button>
                 </div>
             </div>
 
-            <div class="weather-card">
-                <div class="weather-details">
-                    <div class="detail-item">
-                        <i class="fas fa-temperature-low"></i>
-                        <p>Feels Like</p>
-                        <p id="feels-like">0°C</p>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-water"></i>
-                        <p>Humidity</p>
-                        <p id="humidity">0%</p>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-wind"></i>
-                        <p>Wind Speed</p>
-                        <p id="wind-speed">0 km/h</p>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-compass"></i>
-                        <p>Wind Direction</p>
-                        <p id="wind-dir">N</p>
-                    </div>
+            <!-- Middle Panel - Preview -->
+            <div class="glass-card p-6 flex flex-col items-center justify-center">
+                <div id="previewArea" class="w-full h-96 flex items-center justify-center">
+                    <div class="loading-spinner" id="loadingSpinner"></div>
+                    <img id="generatedImage" class="generated-image max-w-full max-h-full rounded-lg hidden" src="" alt="Generated image">
+                </div>
+                <div class="mt-4 flex space-x-4">
+                    <button id="downloadBtn" class="neumorphic py-2 px-4 rounded-lg hidden">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </button>
+                    <button id="shareBtn" class="neumorphic py-2 px-4 rounded-lg hidden">
+                        <i class="fas fa-share-alt mr-2"></i>Share
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Panel - History -->
+            <div class="glass-card p-6">
+                <h2 class="text-2xl font-semibold mb-4">History</h2>
+                <div id="historyContainer" class="space-y-4">
+                    <!-- History items will be added here -->
                 </div>
             </div>
         </div>
 
-        <div class="forecast-container">
-            <h3>14-Day Forecast</h3>
-            <div class="chart-container">
-                <canvas id="forecastChart"></canvas>
+        <!-- Settings Panel -->
+        <div class="glass-card mt-8 p-6">
+            <h2 class="text-2xl font-semibold mb-4">Advanced Settings</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div>
+                    <label class="block mb-2">Sampling Method</label>
+                    <select id="sampler" class="prompt-input w-full p-2 rounded-lg">
+                        <option value="euler_a">Euler Ancestral</option>
+                        <option value="euler">Euler</option>
+                        <option value="heun">Heun</option>
+                        <option value="dpm2">DPM2</option>
+                        <option value="dpm2_ancestral">DPM2 Ancestral</option>
+                        <option value="lms">LMS</option>
+                        <option value="ddim">DDIM</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block mb-2">Seed</label>
+                    <input type="number" id="seed" class="prompt-input w-full p-2 rounded-lg" value="-1">
+                </div>
+
+                <div>
+                    <label class="block mb-2">Batch Size</label>
+                    <input type="number" id="batchSize" class="prompt-input w-full p-2 rounded-lg" value="1" min="1" max="4">
+                </div>
             </div>
         </div>
-
-        <footer>
-            <p>Created with <i class="fas fa-heart" style="color: var(--primary-color);"></i> by ClaytonHax Solutions</p>
-            <p>© 2024</p>
-        </footer>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            darkModeToggle.querySelector('i').classList.toggle('fa-moon');
+            darkModeToggle.querySelector('i').classList.toggle('fa-sun');
+        });
+
+        // Update range input values
+        document.getElementById('steps').addEventListener('input', (e) => {
+            document.getElementById('stepsValue').textContent = e.target.value;
+        });
+
+        document.getElementById('guidance').addEventListener('input', (e) => {
+            document.getElementById('guidanceValue').textContent = e.target.value;
+        });
+
+        // Generate image function
+        document.getElementById('generateBtn').addEventListener('click', async () => {
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const generatedImage = document.getElementById('generatedImage');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const shareBtn = document.getElementById('shareBtn');
+
+            // Show loading spinner
+            loadingSpinner.style.display = 'block';
+            generatedImage.classList.add('hidden');
+            downloadBtn.classList.add('hidden');
+            shareBtn.classList.add('hidden');
+
+            // Gather all input values
+            const prompt = document.getElementById('prompt').value;
+            const negativePrompt = document.getElementById('negativePrompt').value;
+            const width = document.getElementById('width').value;
+            const height = document.getElementById('height').value;
+            const steps = document.getElementById('steps').value;
+            const guidance = document.getElementById('guidance').value;
+            const sampler = document.getElementById('sampler').value;
+            const seed = document.getElementById('seed').value;
+            const batchSize = document.getElementById('batchSize').value;
+
+            try {
+                // Here you would make the API call to your Stable Diffusion backend
+                // For now, we'll simulate a response with a placeholder image
+                await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
+
+                // Hide loading spinner and show image
+                loadingSpinner.style.display = 'none';
+                generatedImage.src = 'https://picsum.photos/512/512'; // Placeholder image
+                generatedImage.classList.remove('hidden');
+                downloadBtn.classList.remove('hidden');
+                shareBtn.classList.remove('hidden');
+
+                // Add to history
+                addToHistory(prompt, 'https://picsum.photos/512/512');
+            } catch (error) {
+                console.error('Error generating image:', error);
+                loadingSpinner.style.display = 'none';
+                alert('Error generating image. Please try again.');
+            }
+        });
+
+        // Add to history function
+        function addToHistory(prompt, imageUrl) {
+            const historyContainer = document.getElementById('historyContainer');
+            const historyItem = document.createElement('div');
+            historyItem.className = 'flex items-center space-x-4 p-2 rounded-lg hover:bg-opacity-50 transition duration-300';
+            historyItem.innerHTML = `
+                <img src="${imageUrl}" alt="History thumbnail" class="w-16 h-16 rounded-lg object-cover">
+                <div class="flex-1">
+                    <p class="text-sm truncate">${prompt}</p>
+                    <p class="text-xs opacity-60">${new Date().toLocaleTimeString()}</p>
+                </div>
+            `;
+            historyContainer.insertBefore(historyItem, historyContainer.firstChild);
+        }
+
+        // Initialize particles
+        createParticles();
+    </script>
 </body>
 </html>
