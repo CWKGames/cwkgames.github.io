@@ -1,85 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weatherly - Harare Forecast</title>
-  <style>
-    /* CSS code */
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background-color: #f0f8ff;
-      color: #333;
-    }
-
-    header, footer {
-      text-align: center;
-      padding: 10px;
-      background-color: #333;
-      color: #fff;
-      width: 100%;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 2em;
-    }
-
-    #weather-info {
-      background-color: #fff;
-      border-radius: 8px;
-      padding: 20px;
-      max-width: 400px;
-      margin: 20px auto;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
-
-    p {
-      font-size: 1.2em;
-    }
-
-    footer p {
-      margin: 0;
-      font-size: 0.9em;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weatherly Pro - Live Weather Updates</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <h1>Weatherly</h1>
-    <p>Your daily weather forecast for Harare, Zimbabwe</p>
-  </header>
-  
-  <main id="weather-info">
-    <h2>Weather in Harare</h2>
-    <p id="temperature">-- °C</p>
-    <p id="weather">Loading...</p>
-    <p id="humidity">Humidity: -- %</p>
-    <p id="wind">Wind Speed: -- kph</p>
-  </main>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-cloud-sun"></i>
+                <h1>Weatherly Pro</h1>
+            </div>
+            <div class="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </div>
+        </header>
 
-  <footer>
-    <p>Powered by Weatherly</p>
-  </footer>
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="city-input" placeholder="Search for a city...">
+                <button id="search-btn">Search</button>
+            </div>
+            <div class="location-btn">
+                <button id="current-location">
+                    <i class="fas fa-location-dot"></i>
+                    Use My Location
+                </button>
+            </div>
+        </div>
 
-  <script>
-    // JavaScript code
-    const apiKey = '11e5e890f3eb43d2834153732240111';
-    const city = 'Harare';
+        <main class="weather-container">
+            <div class="current-weather">
+                <div class="weather-header">
+                    <div class="location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h2 id="city">Loading...</h2>
+                        <span id="country"></span>
+                    </div>
+                    <p id="date-time"></p>
+                </div>
 
-    fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`)
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('temperature').textContent = `${data.current.temp_c} °C`;
-        document.getElementById('weather').textContent = data.current.condition.text;
-        document.getElementById('humidity').textContent = `Humidity: ${data.current.humidity} %`;
-        document.getElementById('wind').textContent = `Wind Speed: ${data.current.wind_kph} kph`;
-      })
-      .catch(error => console.error('Error fetching data:', error));
-  </script>
+                <div class="weather-info">
+                    <div class="temperature">
+                        <img id="weather-icon" src="" alt="Weather Icon">
+                        <h2 id="temp"></h2>
+                        <span class="unit">°C</span>
+                    </div>
+                    <p id="weather-desc"></p>
+                </div>
+
+                <div class="weather-details">
+                    <div class="detail">
+                        <i class="fas fa-temperature-high"></i>
+                        <div class="detail-info">
+                            <p class="label">Feels Like</p>
+                            <p id="feels-like"></p>
+                        </div>
+                    </div>
+                    <div class="detail">
+                        <i class="fas fa-droplet"></i>
+                        <div class="detail-info">
+                            <p class="label">Humidity</p>
+                            <p id="humidity"></p>
+                        </div>
+                    </div>
+                    <div class="detail">
+                        <i class="fas fa-wind"></i>
+                        <div class="detail-info">
+                            <p class="label">Wind Speed</p>
+                            <p id="wind-speed"></p>
+                        </div>
+                    </div>
+                    <div class="detail">
+                        <i class="fas fa-compass"></i>
+                        <div class="detail-info">
+                            <p class="label">Wind Direction</p>
+                            <p id="wind-dir"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="forecast-container">
+                <h3>3-Day Forecast</h3>
+                <div class="forecast" id="forecast"></div>
+            </div>
+        </main>
+
+        <div id="error-message" class="error-message"></div>
+    </div>
+
+    <footer>
+        <p>Created with <i class="fas fa-heart"></i> by Weatherly Pro</p>
+        <p>Powered by WeatherAPI.com</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
