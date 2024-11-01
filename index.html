@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weatherly - Harare Forecast</title>
+  <style>
+    /* CSS code */
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #f0f8ff;
+      color: #333;
+    }
+
+    header, footer {
+      text-align: center;
+      padding: 10px;
+      background-color: #333;
+      color: #fff;
+      width: 100%;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2em;
+    }
+
+    #weather-info {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      max-width: 400px;
+      margin: 20px auto;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    p {
+      font-size: 1.2em;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Weatherly</h1>
+    <p>Your daily weather forecast for Harare, Zimbabwe</p>
+  </header>
+  
+  <main id="weather-info">
+    <h2>Weather in Harare</h2>
+    <p id="temperature">-- °C</p>
+    <p id="weather">Loading...</p>
+    <p id="humidity">Humidity: -- %</p>
+    <p id="wind">Wind Speed: -- kph</p>
+  </main>
+
+  <footer>
+    <p>Powered by Weatherly</p>
+  </footer>
+
+  <script>
+    // JavaScript code
+    const apiKey = '11e5e890f3eb43d2834153732240111';
+    const city = 'Harare';
+
+    fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('temperature').textContent = `${data.current.temp_c} °C`;
+        document.getElementById('weather').textContent = data.current.condition.text;
+        document.getElementById('humidity').textContent = `Humidity: ${data.current.humidity} %`;
+        document.getElementById('wind').textContent = `Wind Speed: ${data.current.wind_kph} kph`;
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  </script>
+</body>
+</html>
