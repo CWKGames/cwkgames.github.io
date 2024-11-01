@@ -121,6 +121,6 @@ currentLocationBtn.addEventListener('click', getCurrentLocation);
 
 // Initial Load
 window.onload = () => {
-    fetchWeather('London');
+    fetchWeather('Harare');
     setInterval(updateDateTime, 60000); // Update time every minute
 };
