@@ -1,4 +1,4 @@
-const apiKey = '11e5e890f3eb43d2834153732240111';
+const apiKey = '4a2f11c859d54cea9a3110639241711';
         let currentUnit = 'C';
 
         // DOM Elements
